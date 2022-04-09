@@ -2,22 +2,22 @@ module parser
 
 import std/text/parse
 
-type literal
+pub type literal
   Int(i: int)
   Null
   Variable(s: string)
 
-type operator
+pub type operator
   Add
   Sub
   Mul
   Div
 
-type parameter
+pub type parameter
   VariableParam(s: string)
   Wildcard
 
-type expr
+pub type expr
   LiteralExpr(l: literal)
   OperatorExpr(op: operator, es: list<expr>)
   LambdaExpr(params: list<parameter>, body: expr)
