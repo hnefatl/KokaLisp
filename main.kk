@@ -2,6 +2,7 @@ module main
 
 import std/text/parse
 
+import ast
 import parser
 import interpreter
 

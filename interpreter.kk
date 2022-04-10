@@ -1,6 +1,6 @@
 module interpreter
 
-import parser
+import ast
 
 type ground-value
   IntValue(i: int)
