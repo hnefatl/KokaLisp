@@ -6,20 +6,24 @@ import ast
 import failable
 import parser
 import transformer
+//import typechecker
 import interpreter
 
 pub type failure-stage
   Parser
   Transformer
+  Typechecker
   Interpreter
 pub alias failable-stage = failable-tagged<failure-stage>
 pub fun show(f) match f
   Parser -> "parser"
   Transformer -> "transformer"
+  Typechecker -> "typechecker"
   Interpreter -> "interpreter"
 pub fun (==)(x: failure-stage, y: failure-stage) match (x, y)
   (Parser, Parser) -> True
   (Transformer, Transformer) -> True
+  (Typechecker, Typechecker) -> True
   (Interpreter, Interpreter) -> True
   _ -> False
 pub fun (!=)(x: failure-stage, y: failure-stage) !(x == y)
@@ -30,6 +34,8 @@ pub fun interpret(source: string): <div,failable-stage> ground-value
     source.parse_complete()
   val transformed = tag_failure(Transformer)
     parsed.rename_variables_complete()
+  //val typechecked = tag_failure(Typechecker)
+  //  transformed.typecheck_complete()
   return tag_failure(Interpreter)
     transformed.interpret_complete()
 
