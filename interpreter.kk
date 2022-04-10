@@ -1,6 +1,8 @@
 module interpreter
 
-import ast
+import ast 
+import failable
+import variable-mapping
 
 type ground-value
   IntValue(i: int)
@@ -13,21 +15,10 @@ pub fun pretty_print(v: ground-value): string
     NullValue -> "()"
     LambdaValue -> "<lambda>"
 
-alias closure-generic<a> = list<(string, a)>
-alias closure = closure-generic<ground-value>
-fun get_variable(closure: closure-generic<a>, variable: string): failable a
-  match find(closure, fn((k,_)){k == variable})
-    Nothing -> fail("variable " ++ variable ++ " not in scope")
-    Just((_, value)) -> value
+alias closure = variable-mapping-generic<ground-value>
 
-
-effect failable
-  ctl fail(msg: string): a
-
-
-pub fun interpret_complete(e: expr): div either<string, ground-value>
-  with ctl fail(err: string) Left(err)
-  Right(interpret(e, []))
+pub fun interpret_complete(e: expr): <div,failable> ground-value
+  interpret(e, [])
 
 fun interpret(e: expr, closure: closure): <div,failable> ground-value
   match e

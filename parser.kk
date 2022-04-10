@@ -3,6 +3,7 @@ module parser
 import std/text/parse
 
 import ast
+import failable
 
 fun parse_bracketed(parser: parser<e,a>): <parse|e> a
   char('(')
@@ -43,8 +44,8 @@ fun parse_operator_expr(): <div,parse> expr
     val op = parse_operator()
     val es = many({whitespace0() ; return parse_expr()})
     match op
-      Div -> if length(es) != 2 then fail("require exactly two expressions in a div") else ()
-      Sub -> if length(es) != 2 then fail("require exactly two expressions in a sub") else ()
+      Div -> if length(es) != 2 then parse/fail("require exactly two expressions in a div") else ()
+      Sub -> if length(es) != 2 then parse/fail("require exactly two expressions in a sub") else ()
       _ -> ()
     OperatorExpr(op, es)
 fun parse_lambda_expr(): <div,parse> expr
@@ -68,6 +69,7 @@ fun parse_application_expr(): <div,parse> expr
 fun parse_expr(): <div,parse> expr
   return choose([parse_literal_expr, parse_operator_expr, parse_lambda_expr, parse_application_expr])
 
-pub fun parse_complete(s: string): div parse-error<expr>
-  parse-eof(s.slice(), parse_expr)
-
+pub fun parse_complete(s: string): <div,failable> expr
+  match parse-eof(s.slice(), parse_expr)
+    ParseError(err, rest) -> failable/fail("error: " ++ err ++ "\nrest:\n" ++ rest.string())
+    ParseOk(e) -> e
