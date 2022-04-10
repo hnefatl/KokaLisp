@@ -4,7 +4,7 @@ import ast
 import failable
 import variable-mapping
 
-type ground-value
+pub type ground-value
   IntValue(i: int)
   NullValue
   // Can't use the closure type alias since the compiler crashes. Recursive type defn?
@@ -14,6 +14,15 @@ pub fun pretty_print(v: ground-value): string
     IntValue(i) -> show(i)
     NullValue -> "()"
     LambdaValue -> "<lambda>"
+pub fun (==)(x: ground-value, y: ground-value): bool
+  match (x, y)
+    (IntValue(x'), IntValue(y')) -> x' == y'
+    (NullValue, NullValue) -> True
+    // Say lambdas are always inequal. Not strictly true, but simplify for now
+    // since I don't want to write out equalities for all the syntax.
+    _ -> False
+pub fun (!=)(x: ground-value, y: ground-value): bool
+  return !(x == y)
 
 alias closure = variable-mapping-generic<ground-value>
 
