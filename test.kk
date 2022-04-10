@@ -20,7 +20,7 @@ fun assert_evaluates_to(action: () -> <failable|e> ground-value, expected: groun
   val x = assert_evaluates(action)
   if x == expected then () else testfail("expression evaluated but got " ++ pretty_print(x) ++ " instead of " ++ pretty_print(expected))
 fun assert_evaluates_to(source: string, expected: ground-value): <div,testfailable|e> ()
-  with override fun testfail(err) testfail(err ++ "\nInput expression:\n" ++ source)
+  with override ctl testfail(err) testfail(err ++ "\nInput expression:\n" ++ source)
   assert_evaluates_to({main/interpret(source)}, expected)
 
 fun assert_fails(action: () -> <failable|e> ground-value): <testfailable|e> ()
@@ -29,7 +29,7 @@ fun assert_fails(action: () -> <failable|e> ground-value): <testfailable|e> ()
     ctl fail(err) ()
   mask<testfailable>(action)
 fun assert_fails(source: string): <div,testfailable|e> ()
-  with override fun testfail(err) testfail(err ++ "\nInput expression:\n" ++ source)
+  with override ctl testfail(err) testfail(err ++ "\nInput expression:\n" ++ source)
   assert_fails({main/interpret(source)})
 
 
@@ -38,6 +38,11 @@ fun main()
     "(+ 1 2)".assert_evaluates_to(IntValue(3))
     "(* 2 3 4)".assert_evaluates_to(IntValue(24))
     "(/ 2 3 4)".assert_fails()
+    "(1 + 1)".assert_fails()
     "(@ (\\x -> (+ x 5)) 7)".assert_evaluates_to(IntValue(12))
     "(@ (\\x -> (* x x)) 3)".assert_evaluates_to(IntValue(9))
     "(@ (\\f x -> (@ f x 3)) (\\y z -> (* y z)) 2)".assert_evaluates_to(IntValue(6))
+    // This loops infinitely (WAI). Would be nice (as long as the language
+    // remains simple) to implement best-effort primitive infinite-recursion
+    // detection.
+    //"(@ (\\f -> (@ f f)) (\\f -> (@ f f)))".assert_fails()

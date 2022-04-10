@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 koka --builddir=.koka-test test.kk || exit $?
-.koka/v2.4.0/gcc-debug/test "$@"
+.koka-test/v2.4.0/gcc-debug/test "$@"
