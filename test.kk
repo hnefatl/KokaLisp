@@ -14,8 +14,7 @@ fun run_test(action: () -> <testfailable|e> ()): <console|e> ()
   mask<console>(action)
 
 fun assert_evaluates(action: () -> <failable|e> a): <testfailable|e> a
-  with handler
-    ctl fail(err) testfail("expression failed to evaluate: " ++ err)
+  with ctl fail(err) testfail("expression failed to evaluate: " ++ err)
   mask<testfailable>(action)
 fun assert_evaluates_to(action: () -> <failable|e> ground-value, expected: ground-value): <testfailable|e> ()
   val x = assert_evaluates(action)
