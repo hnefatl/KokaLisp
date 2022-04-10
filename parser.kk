@@ -16,7 +16,7 @@ fun parse_bracketed(parser: parser<e,a>): <parse|e> a
 fun parse_literal(): parse literal
   return choose([
     {Int(pint())},
-    {pstring("()"); Null},
+    {pstring("()"); Unit},
     {Variable(parse_parameter_name())}
   ])
 

@@ -6,18 +6,18 @@ import variable-mapping
 
 pub type ground-value
   IntValue(i: int)
-  NullValue
+  UnitValue
   // Can't use the closure type alias since the compiler crashes. Recursive type defn?
   LambdaValue(params: list<parameter>, body: expr, closure: variable-mapping-generic<ground-value>)
 pub fun pretty_print(v: ground-value): string
   match v
     IntValue(i) -> show(i)
-    NullValue -> "()"
+    UnitValue -> "()"
     LambdaValue -> "<lambda>"
 pub fun (==)(x: ground-value, y: ground-value): bool
   match (x, y)
     (IntValue(x'), IntValue(y')) -> x' == y'
-    (NullValue, NullValue) -> True
+    (UnitValue, UnitValue) -> True
     // Say lambdas are always inequal. Not strictly true, but simplify for now
     // since I don't want to write out equalities for all the syntax.
     _ -> False
@@ -48,7 +48,7 @@ fun interpret(e: expr): <has-closure,div,failable> ground-value
 fun interpret(l: literal): <has-closure,failable> ground-value
   match l
     Int(i) -> IntValue(i)
-    Null -> NullValue
+    Unit -> UnitValue
     Variable(v) -> get_variable(v)
 
 // Evaluate a function application, failing if it's not a valid application.

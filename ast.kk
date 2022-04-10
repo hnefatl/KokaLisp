@@ -2,7 +2,7 @@ module ast
 
 pub type literal
   Int(i: int)
-  Null
+  Unit
   Variable(s: string)
 
 pub type operator
@@ -24,7 +24,7 @@ pub type expr
 pub fun pretty_print(l: literal): string
   match l
     Int(i) -> show(i)
-    Null -> "()"
+    Unit -> "()"
     Variable(s) -> s
 pub fun pretty_print(o: operator): string
   match o

@@ -64,8 +64,8 @@ fun main()
     "(@ (\\x -> (+ x 5)) 7)".assert_evaluates_to(IntValue(12))
     "(@ (\\x -> (* x x)) 3)".assert_evaluates_to(IntValue(9))
     "(@ (\\f x -> (@ f x 3)) (\\y z -> (* y z)) 2)".assert_evaluates_to(IntValue(6))
-    "()".assert_evaluates_to(NullValue)
-    "(@ (\\_ x -> x) 1 ())".assert_evaluates_to(NullValue)
+    "()".assert_evaluates_to(UnitValue)
+    "(@ (\\_ x -> x) 1 ())".assert_evaluates_to(UnitValue)
     // This loops infinitely (WAI). Would be nice (as long as the language
     // remains simple) to implement best-effort primitive infinite-recursion
     // detection.
